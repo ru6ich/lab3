@@ -1,0 +1,30 @@
+@model IEnumerable<dynamic>
+
+@{
+    ViewData["Title"] = "Каталог тем";
+}
+
+<h1>Каталог тем</h1>
+
+<div class="sections-container">
+    @foreach (var sectionItem in Model)
+    {
+        <div class="section">
+            <h2 data-section-id="@sectionItem.Id">@sectionItem.SectionName</h2>
+            <div id="topics-@sectionItem.Id" class="topics-container">
+                <div class="loading-indicator" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Загрузка...</span>
+                    </div>
+                </div>
+                <div class="topics-content">
+                    <!-- Здесь будут загружаться темы -->
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/js/catalog.js" asp-append-version="true"></script>
+}

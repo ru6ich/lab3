@@ -1,0 +1,331 @@
+{
+  "Version": 1,
+  "Hash": "zxjkF8Fr1zaC0lX6KfGa9jvtHDGY3um+XQWVy3BLsa0=",
+  "Source": "Backend",
+  "BasePath": "_content/Backend",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "Backend\\wwwroot",
+      "Source": "Backend",
+      "ContentRoot": "D:\\TSI\\lab3\\Backend\\wwwroot\\",
+      "BasePath": "_content/Backend",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "D:\\TSI\\lab3\\Backend\\wwwroot\\css\\site.css",
+      "SourceId": "Backend",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\TSI\\lab3\\Backend\\wwwroot\\",
+      "BasePath": "_content/Backend",
+      "RelativePath": "css/site#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "hkryan05ju",
+      "Integrity": "EQYArKCius1Lk8oDNnujKfHvnriSY/UzOK56e+ULXI4=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\site.css"
+    },
+    {
+      "Identity": "D:\\TSI\\lab3\\Backend\\wwwroot\\js\\catalog.js",
+      "SourceId": "Backend",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\TSI\\lab3\\Backend\\wwwroot\\",
+      "BasePath": "_content/Backend",
+      "RelativePath": "js/catalog#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "v19esnozi9",
+      "Integrity": "rUIRySZ+G5q8TYTlY4aoOV3g2p2JR+NsVKnzm31Beo0=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\catalog.js"
+    },
+    {
+      "Identity": "D:\\TSI\\lab3\\Backend\\wwwroot\\js\\site.js",
+      "SourceId": "Backend",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\TSI\\lab3\\Backend\\wwwroot\\",
+      "BasePath": "_content/Backend",
+      "RelativePath": "js/site#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "fjryukl2ep",
+      "Integrity": "FcJm69EM0Q6+Cu2KUSSy0918Jk1jUgmZ9tlyi/Pfgvs=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\site.js"
+    }
+  ],
+  "Endpoints": [
+    {
+      "Route": "css/site.css",
+      "AssetFile": "D:\\TSI\\lab3\\Backend\\wwwroot\\css\\site.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3034"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"EQYArKCius1Lk8oDNnujKfHvnriSY/UzOK56e+ULXI4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 22 Mar 2025 12:53:08 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-EQYArKCius1Lk8oDNnujKfHvnriSY/UzOK56e+ULXI4="
+        }
+      ]
+    },
+    {
+      "Route": "css/site.hkryan05ju.css",
+      "AssetFile": "D:\\TSI\\lab3\\Backend\\wwwroot\\css\\site.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3034"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"EQYArKCius1Lk8oDNnujKfHvnriSY/UzOK56e+ULXI4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 22 Mar 2025 12:53:08 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "hkryan05ju"
+        },
+        {
+          "Name": "label",
+          "Value": "css/site.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-EQYArKCius1Lk8oDNnujKfHvnriSY/UzOK56e+ULXI4="
+        }
+      ]
+    },
+    {
+      "Route": "js/catalog.js",
+      "AssetFile": "D:\\TSI\\lab3\\Backend\\wwwroot\\js\\catalog.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "7745"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"rUIRySZ+G5q8TYTlY4aoOV3g2p2JR+NsVKnzm31Beo0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 22 Mar 2025 12:52:50 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-rUIRySZ+G5q8TYTlY4aoOV3g2p2JR+NsVKnzm31Beo0="
+        }
+      ]
+    },
+    {
+      "Route": "js/catalog.v19esnozi9.js",
+      "AssetFile": "D:\\TSI\\lab3\\Backend\\wwwroot\\js\\catalog.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "7745"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"rUIRySZ+G5q8TYTlY4aoOV3g2p2JR+NsVKnzm31Beo0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 22 Mar 2025 12:52:50 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "v19esnozi9"
+        },
+        {
+          "Name": "label",
+          "Value": "js/catalog.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-rUIRySZ+G5q8TYTlY4aoOV3g2p2JR+NsVKnzm31Beo0="
+        }
+      ]
+    },
+    {
+      "Route": "js/site.fjryukl2ep.js",
+      "AssetFile": "D:\\TSI\\lab3\\Backend\\wwwroot\\js\\site.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "47"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"FcJm69EM0Q6+Cu2KUSSy0918Jk1jUgmZ9tlyi/Pfgvs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 22 Mar 2025 07:49:53 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "fjryukl2ep"
+        },
+        {
+          "Name": "label",
+          "Value": "js/site.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-FcJm69EM0Q6+Cu2KUSSy0918Jk1jUgmZ9tlyi/Pfgvs="
+        }
+      ]
+    },
+    {
+      "Route": "js/site.js",
+      "AssetFile": "D:\\TSI\\lab3\\Backend\\wwwroot\\js\\site.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "47"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"FcJm69EM0Q6+Cu2KUSSy0918Jk1jUgmZ9tlyi/Pfgvs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 22 Mar 2025 07:49:53 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-FcJm69EM0Q6+Cu2KUSSy0918Jk1jUgmZ9tlyi/Pfgvs="
+        }
+      ]
+    }
+  ]
+}

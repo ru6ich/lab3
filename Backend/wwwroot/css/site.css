@@ -1,0 +1,186 @@
+/* Общие стили */
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+/* Стили для каталога */
+.filters {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+}
+
+.filter-form {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.sections-container {
+    margin-top: 2rem;
+}
+
+.section {
+    margin-bottom: 2rem;
+}
+
+.section h2 {
+    cursor: pointer;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+.section h2:hover {
+    background-color: #e9ecef;
+}
+
+.topics-container {
+    margin-left: 1rem;
+}
+
+.topic-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.topic-card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.topic-card p {
+    margin-bottom: 1rem;
+    color: #6c757d;
+}
+
+.topic-meta {
+    margin-top: 10px;
+    color: #666;
+}
+
+.topic-meta span {
+    margin-right: 15px;
+}
+
+.topic-actions {
+    margin-top: 15px;
+    text-align: right;
+}
+
+.topic-actions .btn {
+    display: inline-block !important;
+    margin-left: 10px;
+    padding: 5px 15px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.topic-actions .btn-primary:active {
+    transform: translateY(0);
+}
+
+.topic-actions .btn-primary:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    outline: none;
+}
+
+.loading-indicator {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.error-message {
+    color: #dc3545;
+    padding: 1rem;
+    text-align: center;
+}
+
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.card {
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+}
+
+.stars {
+    color: #ffc107;
+    margin: 0.5rem 0;
+}
+
+.edit-form {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+} 

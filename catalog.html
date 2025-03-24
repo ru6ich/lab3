@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Темы по Go</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .edit-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .edit-button:hover {
+            background-color: #45a049;
+        }
+
+        .edit-form {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .edit-form input, .edit-form textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+        }
+
+        .edit-form button {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Язык Go. Темы для изучения.</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Главная страница</a></li>
+                <li><a href="catalog.html" class="active">Темы изучения</a></li>
+                <li><a href="add-object.html">Добавить тему</a></li>
+                <li><a href="contacts.html">Контакты разработчика</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2 class="visually-hidden">Темы для изучения</h2>
+
+            <!-- Фильтры -->
+            <input type="text" id="search" placeholder="Поиск по разделам..." oninput="searchTopics(this.value)">
+            <select id="difficulty-filter" onchange="applyFilters()">
+                <option value="">Выберите сложность</option>
+                <option value="1">1 звезда</option>
+                <option value="2">2 звезды</option>
+                <option value="3">3 звезды</option>
+                <option value="4">4 звезды</option>
+                <option value="5">5 звезд</option>
+            </select>
+            <select id="time-filter" onchange="applyFilters()">
+                <option value="">Выберите время</option>
+                <option value="5">5 минут</option>
+                <option value="15">15 минут</option>
+                <option value="30">30 минут</option>
+                <option value="60">1 час</option>
+                <option value="120">2 часа</option>
+            </select>
+
+            <ul class="topic-list"></ul>
+        </section>
+    </main>
+    <footer>
+        <p>
+            <img src="kaspersky.jpg" alt="Логотип Kaspersky" class="footer-img">
+            Файлы защищены Kaspersky Internet Security
+        </p>
+    </footer>
+
+    <div id="editForm" class="edit-form">
+        <h3>Редактировать тему</h3>
+        <input type="hidden" id="editTopicId">
+        
+        <label for="editTopicName">Название темы:</label>
+        <input type="text" id="editTopicName" required placeholder="Не менее 3 символов">
+        <ul id="editTopicName-error" style="color: red;"></ul>
+
+        <label for="editSectionName">Название раздела:</label>
+        <input type="text" id="editSectionName" required placeholder="Не менее 3 символов">
+        <ul id="editSectionName-error" style="color: red;"></ul>
+
+        <label for="editDescription">Описание:</label>
+        <textarea id="editDescription" required placeholder="Не менее 10 символов"></textarea>
+        <ul id="editDescription-error" style="color: red;"></ul>
+
+        <label for="editAuthorName">Имя автора:</label>
+        <input type="text" id="editAuthorName" required placeholder="Только буквы и пробелы">
+        <ul id="editAuthorName-error" style="color: red;"></ul>
+
+        <label for="editEmail">Email автора:</label>
+        <input type="email" id="editEmail" required placeholder="example@mail.com">
+        <ul id="editEmail-error" style="color: red;"></ul>
+
+        <label for="editDate">Дата создания темы:</label>
+        <input type="date" id="editDate" required>
+        <ul id="editDate-error" style="color: red;"></ul>
+
+        <label for="editDifficulty">Сложность темы (звезды):</label>
+        <select id="editDifficulty" required>
+            <option value="">Выберите сложность</option>
+            <option value="1">1 звезда</option>
+            <option value="2">2 звезды</option>
+            <option value="3">3 звезды</option>
+            <option value="4">4 звезды</option>
+            <option value="5">5 звезд</option>
+        </select>
+        <ul id="editDifficulty-error" style="color: red;"></ul>
+
+        <label for="editTimeLimit">Время чтения:</label>
+        <select id="editTimeLimit" required>
+            <option value="">Выберите время</option>
+            <option value="5">5 минут</option>
+            <option value="15">15 минут</option>
+            <option value="30">30 минут</option>
+            <option value="60">1 час</option>
+            <option value="120">2 часа</option>
+        </select>
+        <ul id="editTimeLimit-error" style="color: red;"></ul>
+
+        <button onclick="validateAndSaveEdit()">Сохранить</button>
+        <button onclick="cancelEdit()">Отмена</button>
+    </div>
+
+    <script>
+        let topicsData = [];
+        let loadedSections = 0;
+        const sectionsPerLoad = 3;
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function renderTopics(topics) {
+            const topicList = document.querySelector('.topic-list');
+            topicList.innerHTML = '';
+
+            if (topics.length === 0) {
+                topicList.innerHTML = '<p>В этом разделе пока нет тем</p>';
+                return;
+            }
+
+            topics.forEach(topic => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.dataset.topicId = topic.id;
+                
+                // Создаем звездочки для сложности
+                const stars = '★'.repeat(topic.difficulty) + '☆'.repeat(5 - topic.difficulty);
+                
+                card.innerHTML = `
+                    <h3><a href="topic-details.html?id=${topic.id}">${topic.topicName}</a></h3>
+                    <p>${topic.description}</p>
+                    <div class="stars">${stars}</div>
+                    <div class="time">Время на изучение: ${topic.timeLimit} мин</div>
+                    <div class="author">Автор: ${topic.authorName}</div>
+                    <div class="date">Дата создания: ${new Date(topic.createdAt).toLocaleDateString()}</div>
+                    <button class="edit-button" onclick="editTopic(${topic.id})">Редактировать</button>
+                `;
+                
+                topicList.appendChild(card);
+            });
+        }
+
+        function loadSections(start) {
+            const list = document.querySelector('.topic-list');
+            const end = Math.min(start + sectionsPerLoad, topicsData.length);
+            
+            for (let i = start; i < end; i++) {
+                const section = topicsData[i];
+                const li = document.createElement('li');
+                
+                const button = document.createElement('button');
+                button.classList.add('topic-button');
+                button.textContent = `${section.name} (${section.topicCount})`;
+                button.dataset.section = section.name;
+                li.appendChild(button);
+
+                const container = document.createElement('div');
+                container.classList.add('cards-container', 'hidden');
+                container.dataset.section = section.name;
+                li.appendChild(container);
+
+                button.addEventListener('click', function() {
+                    const sectionName = this.dataset.section;
+                    const container = this.nextElementSibling;
+                    
+                    // Если контейнер уже загружен, просто переключаем его видимость
+                    if (container.dataset.loaded) {
+                        container.classList.toggle('hidden');
+                        return;
+                    }
+                    
+                    // Загружаем темы для выбранного раздела
+                    loadTopics(sectionName, container);
+                });
+
+                button.addEventListener('mouseenter', function() {
+                    // Загружаем количество тем из базы данных
+                    fetch(`http://localhost:49896/api/topics/section/${encodeURIComponent(section.name)}`)
+                        .then(response => response.json())
+                        .then(topics => {
+                            button.textContent = `${section.name} (${topics.length})`;
+                        });
+                });
+
+                button.addEventListener('mouseleave', function() {
+                    button.textContent = section.name;
+                });
+
+                list.appendChild(li);
+            }
+            loadedSections += sectionsPerLoad;
+        }
+
+        // Загружаем список разделов из базы данных
+        fetch('http://localhost:49896/api/topics/sections')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Ошибка при загрузке разделов');
+                }
+                return response.json();
+            })
+            .then(sections => {
+                topicsData = sections.map(section => ({
+                    name: section.sectionName,
+                    topicCount: section.topicCount,
+                    topics: []
+                }));
+                loadSections(0);
+            })
+            .catch(error => {
+                console.error('Ошибка при загрузке разделов:', error);
+                document.querySelector('.topic-list').innerHTML = '<p class="error">Ошибка при загрузке разделов</p>';
+            });
+
+        window.addEventListener('scroll', function() {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+                loadSections(loadedSections);
+            }
+        });
+
+        // Добавляем новые функции для работы с API
+        function searchTopics(query) {
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const query = document.getElementById('search').value;
+            const difficulty = document.getElementById('difficulty-filter').value;
+            const time = document.getElementById('time-filter').value;
+
+            // Если есть хотя бы один активный фильтр, показываем темы напрямую
+            if (query.trim() || difficulty || time) {
+                let url = 'http://localhost:49896/api/topics/search?';
+                const params = new URLSearchParams();
+
+                if (query.trim()) {
+                    params.append('query', query.trim());
+                }
+                if (difficulty) {
+                    params.append('difficulty', difficulty);
+                }
+                if (time) {
+                    params.append('time', time);
+                }
+
+                url += params.toString();
+
+                console.log('Отправка запроса:', url);
+
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(topics => {
+                        console.log('Получены темы:', topics);
+                        renderTopics(topics);
+                    })
+                    .catch(error => {
+                        console.error('Ошибка при поиске тем:', error);
+                        document.querySelector('.topic-list').innerHTML = '<p class="error">Ошибка при поиске тем</p>';
+                    });
+            } else {
+                // Если фильтров нет, показываем разделы
+                fetch('http://localhost:49896/api/topics/sections')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Ошибка при загрузке разделов');
+                        }
+                        return response.json();
+                    })
+                    .then(sections => {
+                        topicsData = sections.map(section => ({
+                            name: section.sectionName,
+                            topicCount: section.topicCount,
+                            topics: []
+                        }));
+                        const topicList = document.querySelector('.topic-list');
+                        topicList.innerHTML = '';
+                        loadSections(0);
+                    })
+                    .catch(error => {
+                        console.error('Ошибка при загрузке разделов:', error);
+                        document.querySelector('.topic-list').innerHTML = '<p class="error">Ошибка при загрузке разделов</p>';
+                    });
+            }
+        }
+
+        // Функция для загрузки тем выбранного раздела
+        function loadTopics(sectionName, container) {
+            container.innerHTML = '<p>Загрузка тем...</p>';
+
+            console.log('Загрузка тем для раздела:', sectionName);
+
+            fetch(`http://localhost:49896/api/topics/section/${encodeURIComponent(sectionName)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(topics => {
+                    console.log('Получены темы:', topics);
+                    if (topics.length === 0) {
+                        container.innerHTML = '<p>В этом разделе пока нет тем</p>';
+                        container.dataset.loaded = 'true';
+                        return;
+                    }
+                    
+                    // Создаем карточки тем
+                    const cardsContainer = document.createElement('div');
+                    topics.forEach(topic => {
+                        const card = document.createElement('div');
+                        card.className = 'card';
+                        card.dataset.topicId = topic.id;
+                        
+                        // Создаем звездочки для сложности
+                        const stars = '★'.repeat(topic.difficulty) + '☆'.repeat(5 - topic.difficulty);
+                        
+                        card.innerHTML = `
+                            <h3><a href="topic-details.html?id=${topic.id}">${topic.topicName}</a></h3>
+                            <p>${topic.description}</p>
+                            <div class="stars">${stars}</div>
+                            <div class="time">Время на изучение: ${topic.timeLimit} мин</div>
+                            <div class="author">Автор: ${topic.authorName}</div>
+                            <div class="date">Дата создания: ${new Date(topic.createdAt).toLocaleDateString()}</div>
+                            <button class="edit-button" onclick="editTopic(${topic.id})">Редактировать</button>
+                        `;
+                        
+                        cardsContainer.appendChild(card);
+                    });
+                    
+                    container.innerHTML = '';
+                    container.appendChild(cardsContainer);
+                    container.dataset.loaded = 'true';
+                    container.classList.remove('hidden');
+                })
+                .catch(error => {
+                    console.error('Ошибка при загрузке тем:', error);
+                    container.innerHTML = `<p class="error">Ошибка при загрузке тем: ${error.message}</p>`;
+                    container.dataset.loaded = 'true';
+                });
+        }
+
+        // Функции для редактирования темы
+        function editTopic(topicId) {
+            const editForm = document.getElementById('editForm');
+            
+            // Получаем данные темы
+            fetch(`http://localhost:49896/api/topics/${topicId}`)
+                .then(response => response.json())
+                .then(topic => {
+                    document.getElementById('editTopicId').value = topic.id;
+                    document.getElementById('editTopicName').value = topic.topicName;
+                    document.getElementById('editSectionName').value = topic.sectionName;
+                    document.getElementById('editDescription').value = topic.description;
+                    document.getElementById('editAuthorName').value = topic.authorName;
+                    document.getElementById('editEmail').value = topic.authorEmail;
+                    document.getElementById('editDate').value = topic.createdAt.split('T')[0];
+                    document.getElementById('editDifficulty').value = topic.difficulty;
+                    document.getElementById('editTimeLimit').value = topic.timeLimit;
+                    
+                    editForm.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Ошибка при загрузке темы:', error);
+                    alert('Ошибка при загрузке темы');
+                });
+        }
+
+        function validateField(field) {
+            const errorContainer = document.getElementById(`${field.id}-error`);
+            let errors = [];
+
+            switch (field.id) {
+                case 'editTopicName':
+                    if (field.value.length < 3) {
+                        errors.push("Название темы должно содержать не менее 3 символов.");
+                    }
+                    break;
+                case 'editSectionName':
+                    if (field.value.length < 3) {
+                        errors.push("Название раздела должно содержать не менее 3 символов.");
+                    }
+                    break;
+                case 'editDescription':
+                    if (field.value.length < 10) {
+                        errors.push("Описание должно содержать не менее 10 символов.");
+                    }
+                    break;
+                case 'editAuthorName':
+                    const nameRegex = /^[A-Za-zА-Яа-яЁё\s-]+$/;
+                    if (!nameRegex.test(field.value)) {
+                        errors.push("Имя автора должно содержать только буквы и пробелы.");
+                    }
+                    break;
+                case 'editEmail':
+                    const emailRegex = /^(?!.*\.\.)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+(?:\.[a-zA-Z]{2,})+$/;
+                    if (!emailRegex.test(field.value)) {
+                        errors.push("Введите корректный адрес электронной почты.");
+                    }
+                    break;
+                case 'editDate':
+                    if (!field.value) {
+                        errors.push("Введите дату создания темы.");
+                    }
+                    break;
+                case 'editDifficulty':
+                    if (!field.value) {
+                        errors.push("Выберите сложность.");
+                    }
+                    break;
+                case 'editTimeLimit':
+                    if (!field.value) {
+                        errors.push("Выберите время чтения.");
+                    }
+                    break;
+            }
+
+            updateErrorMessages(errors, errorContainer);
+        }
+
+        function updateErrorMessages(errors, errorContainer) {
+            errorContainer.innerHTML = '';
+            if (errors.length > 0) {
+                errors.forEach(error => {
+                    const li = document.createElement('li');
+                    li.textContent = error;
+                    errorContainer.appendChild(li);
+                });
+            }
+        }
+
+        function validateAndSaveEdit() {
+            const fields = [
+                document.getElementById('editTopicName'),
+                document.getElementById('editSectionName'),
+                document.getElementById('editDescription'),
+                document.getElementById('editAuthorName'),
+                document.getElementById('editEmail'),
+                document.getElementById('editDate'),
+                document.getElementById('editDifficulty'),
+                document.getElementById('editTimeLimit')
+            ];
+
+            let hasErrors = false;
+            fields.forEach(field => {
+                validateField(field);
+                if (document.getElementById(`${field.id}-error`).children.length > 0) {
+                    hasErrors = true;
+                }
+            });
+
+            if (!hasErrors) {
+                saveEdit();
+            }
+        }
+
+        function saveEdit() {
+            const topicId = document.getElementById('editTopicId').value;
+            
+            // Создаем объект с данными темы
+            const params = new URLSearchParams({
+                id: topicId,
+                topicName: document.getElementById('editTopicName').value,
+                sectionName: document.getElementById('editSectionName').value,
+                description: document.getElementById('editDescription').value,
+                authorName: document.getElementById('editAuthorName').value,
+                email: document.getElementById('editEmail').value,
+                creationDate: document.getElementById('editDate').value,
+                complexity: document.getElementById('editDifficulty').value.toString(),
+                readingTime: document.getElementById('editTimeLimit').value.toString()
+            });
+
+            // Используем URL для редактирования темы с параметрами в URL
+            const url = `http://localhost:49896/api/topics/edit?${params.toString()}`;
+            
+            console.log('URL запроса:', url);
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                },
+                credentials: 'include'
+            })
+            .then(response => {
+                console.log('Статус ответа:', response.status);
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        console.error('Текст ошибки:', text);
+                        throw new Error(`Ошибка при обновлении темы: ${response.status} ${text}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(result => {
+                console.log('Успешный ответ:', result);
+                // Удаляем старую запись из списка тем
+                const oldCard = document.querySelector(`[data-topic-id="${topicId}"]`);
+                if (oldCard) {
+                    oldCard.remove();
+                }
+                alert('Тема успешно обновлена!');
+                cancelEdit();
+                // Перезагружаем список тем
+                applyFilters();
+            })
+            .catch(error => {
+                console.error('Ошибка при обновлении темы:', error);
+                alert('Ошибка при обновлении темы: ' + error.message);
+            });
+        }
+
+        function cancelEdit() {
+            document.getElementById('editForm').style.display = 'none';
+        }
+
+        // Закрытие формы при клике вне её
+        window.onclick = function(event) {
+            const editForm = document.getElementById('editForm');
+            if (event.target === editForm) {
+                cancelEdit();
+            }
+        }
+
+        // Добавляем обработчики событий для валидации полей
+        window.addEventListener('load', function() {
+            const fields = document.querySelectorAll('#editForm input, #editForm textarea, #editForm select');
+            fields.forEach(field => {
+                field.addEventListener('input', () => validateField(field));
+                field.addEventListener('change', () => validateField(field));
+            });
+        });
+    </script>
+</body>
+</html>

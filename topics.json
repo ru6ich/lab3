@@ -1,0 +1,42 @@
+{
+    "Начало работы": [
+        { "name": "Настройка редактора", "link": "editor-setup.html" },
+        { "name": "Структура программы", "link": "program-structure.html" },
+        { "name": "Основы синтаксиса", "link": "syntax.html" }
+    ],
+    "Типы данных": [
+        { "name": "Примитивные типы", "link": "primitive-types.html" },
+        { "name": "Ссылочные типы", "link": "reference-types.html" },
+        { "name": "Структуры", "link": "structs.html" }
+    ],
+    "Многопоточность": [
+        { "name": "Работа с горутинами", "link": "goroutines.html" },
+        { "name": "Каналы", "link": "channels.html" },
+        { "name": "Мьютексы", "link": "mutexes.html" }
+    ],
+    "Функции": [
+        { "name": "Определение функций", "link": "functions.html" },
+        { "name": "Замыкания", "link": "closures.html" },
+        { "name": "Рекурсия", "link": "recursion.html" }
+    ],
+    "Модули и пакеты": [
+        { "name": "Создание пакетов", "link": "packages.html" },
+        { "name": "Импорт модулей", "link": "imports.html" },
+        { "name": "Работа с Go Modules", "link": "gomodules.html" }
+    ],
+    "Обработка ошибок": [
+        { "name": "Panic и Recover", "link": "panic.html" },
+        { "name": "Создание ошибок", "link": "errors.html" },
+        { "name": "Обработка ошибок", "link": "handling-errors.html" }
+    ],
+    "Работа с файлами": [
+        { "name": "Чтение файлов", "link": "file-read.html" },
+        { "name": "Запись файлов", "link": "file-write.html" },
+        { "name": "Работа с директориями", "link": "directories.html" }
+    ],
+    "Веб-разработка": [
+        { "name": "Создание HTTP сервера", "link": "http-server.html" },
+        { "name": "Маршрутизация", "link": "routing.html" },
+        { "name": "Обработка запросов", "link": "request-handling.html" }
+    ]
+}

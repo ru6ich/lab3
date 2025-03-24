@@ -1,0 +1,7 @@
+D:\TSI\lab3\obj\Debug\net8.0\Backend.csproj.AssemblyReference.cache
+D:\TSI\lab3\obj\Debug\net8.0\Backend.GeneratedMSBuildEditorConfig.editorconfig
+D:\TSI\lab3\obj\Debug\net8.0\Backend.AssemblyInfoInputs.cache
+D:\TSI\lab3\obj\Debug\net8.0\Backend.AssemblyInfo.cs
+D:\TSI\lab3\obj\Debug\net8.0\Backend.csproj.CoreCompileInputs.cache
+D:\TSI\lab3\obj\Debug\net8.0\Backend.MvcApplicationPartsAssemblyInfo.cs
+D:\TSI\lab3\obj\Debug\net8.0\Backend.MvcApplicationPartsAssemblyInfo.cache

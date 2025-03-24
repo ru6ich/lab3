@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Изучение языка программирования Go</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="enlargeImage.js"></script>
+    <style>
+        .scroll-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007BFF; 
+            color: white; 
+            border: none; 
+            border-radius: 50%; 
+            width: 50px; 
+            height: 50px; 
+            font-size: 24px; 
+            cursor: pointer; 
+            display: none; 
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); 
+            /* align-items: center;
+            justify-content: center; */
+        }
+
+        .scroll-to-top:hover {
+            background-color: #0056b3; 
+        }
+
+        footer {
+            background-color: #2c3e50;
+            padding: 20px ; 
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+            height: 50px; 
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Изучение языка программирования Go</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="active">Главная страница</a></li>
+                <li><a href="catalog.html" >Темы изучения</a></li>
+                <li><a href="add-object.html">Добавить тему</a></li>
+                <li><a href="contacts.html">Контакты разработчика</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>Введение в программирование на Go</h2>
+            <img src="go.jpg" alt="Логотип Go" style="max-width:50%;height:auto;cursor:pointer;" onclick="enlargeImage(this)">
+            <p>Go (или Golang) — это современный язык программирования, разработанный компанией Google. Его основная цель — создать простой, мощный и быстрый инструмент для разработки серверных приложений. Go обладает рядом преимуществ, таких как лаконичный синтаксис, высокопроизводительный компилятор и встроенные механизмы параллелизма, которые делают его уникальным выбором для разработчиков.</p>
+            <p>Благодаря своей простоте и универсальности Go быстро стал одним из самых популярных языков программирования. Его используют в крупных проектах, таких как Kubernetes, Docker, и многих других инструментах, которые лежат в основе современной IT-инфраструктуры. На этом сайте вы найдете учебные материалы, примеры кода и советы по работе с языком.</p>
+            <p>Наш сайт предлагает структурированный подход к изучению Go. Мы начнем с базовых понятий, таких как установка и первые шаги, и перейдем к более сложным темам, таким как работа с горутинами и каналами. Это позволит вам не только освоить язык, но и понять, как эффективно его применять в реальных проектах.</p>
+            <h2>Настройка окружения</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Операционная система</th>
+                        <th>Шаги установки</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>UNIX / Linux / MacOS / FreeBSD</td>
+                        <td>
+                            <ol>
+                                <li>Скачайте архив с официального сайта.</li>
+                                <li>Распакуйте в папку /usr/local/go.</li>
+                                <li>Добавьте /usr/local/go/bin в PATH.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Windows</td>
+                        <td>
+                            <ol>
+                                <li>Скачайте MSI-файл с официального сайта.</li>
+                                <li>Следуйте инструкциям установщика.</li>
+                                <li>Убедитесь, что папка C:\Go\bin добавлена в PATH.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>Чтобы изменения вступили в силу, перезапустите терминал.</p>
+
+            <p>Проверяем корректность установки, создав и выполнив файл C:ProjectsGo\test.go:</p>
+            <pre>
+            <code>
+            package main
+            import "fmt"
+
+            func main() {
+                fmt.Println("Привет, Мир!")
+            }
+            </code>
+            </pre>
+
+            <p>Кроме того, Go предлагает мощные инструменты для работы с сетевыми приложениями. Встроенные библиотеки позволяют легко создавать веб-серверы и обрабатывать HTTP-запросы. Это делает Go отличным выбором для разработки микросервисов и RESTful API.</p>
+            <p>Одной из ключевых особенностей Go является его система управления зависимостями. С помощью инструмента Go Modules разработчики могут легко управлять версиями библиотек и пакетами, что значительно упрощает процесс разработки и развертывания приложений.</p>
+            <p>Также стоит отметить активное сообщество разработчиков, которое постоянно создает новые библиотеки и фреймворки для Go. Это позволяет расширять функциональность языка и адаптировать его под различные задачи. Существуют библиотеки для работы с базами данных, графическими интерфейсами, а также для тестирования и отладки кода.</p>
+            <p>В заключение, язык Go является отличным выбором для разработчиков, стремящихся создать высокопроизводительные приложения с минимальными затратами времени на изучение. Его простота, эффективность и поддержка со стороны сообщества делают его идеальным инструментом для решения современных задач в области программирования.</p>
+        </section>
+        <section>
+            <h2 id="toggle-list" style="cursor: pointer;">
+                Основные особенности Go 
+                <span id="icon" style="font-size: 16px;">▼</span>
+            </h2>
+            <ul id="features-list" style="display: none;">
+                <li>Простота синтаксиса — язык легко изучить даже новичкам.</li>
+                <li>Высокая производительность — идеально подходит для серверных приложений.</li>
+                <li>Параллелизм — встроенные механизмы работы с многопоточностью.</li>
+                <li>Наличие стандартной библиотеки, которая покрывает большинство задач.</li>
+                <li>Поддержка модульности — управление зависимостями через Go Modules.</li>
+                <li>Активное сообщество — множество библиотек и фреймворков для различных задач.</li>
+            </ul>
+        </section>
+
+        
+    <button class="scroll-to-top" id="scrollToTop" onclick="scrollToTop()">↑</button>
+
+    <script>
+
+        
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth' 
+            });
+        }
+
+        
+        window.onscroll = function() {
+            const button = document.getElementById('scrollToTop');
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                button.style.display = "block"; 
+            } else {
+                button.style.display = "none"; 
+            }
+        };
+    </script>
+        
+        <script>
+            document.getElementById('toggle-list').addEventListener('click', function() {
+                const list = document.getElementById('features-list');
+                const icon = document.getElementById('icon');
+                
+                if (list.style.display === 'none') {
+                    list.style.display = 'block';
+                    icon.textContent = '▲';
+                } else {
+                    list.style.display = 'none';
+                    icon.textContent = '▼'; 
+                }
+            });
+        </script>
+        
+        <div id="enlargedImage" class="enlarged" style="display:none;" onclick="this.style.display='none'">
+            <img id="largeImg" src="" alt="">
+        </div>
+    </main>
+    <footer id="footer">
+        <div class="marquee" id="marquee">
+            <img src="kaspersky.jpg" alt="Логотип Kaspersky" class="footer-img" style="height: 30px; margin-right: 10px;">
+            Файлы защищены Kaspersky Internet Security
+        </div>
+    </footer>
+    
+    <script>
+        const marquee = document.getElementById('marquee');
+        const footer = document.getElementById('footer');
+    
+        
+        function stopMarquee() {
+            marquee.style.animationPlayState = 'paused';
+        }
+    
+        
+        function startMarquee() {
+            marquee.style.animationPlayState = 'running';
+        }
+    
+        
+        footer.addEventListener('mouseover', stopMarquee);
+        footer.addEventListener('mouseout', startMarquee);
+    </script>
+</body>
+</html>

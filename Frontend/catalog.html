@@ -1,0 +1,45 @@
+async function applyFilters() {
+    const searchQuery = document.getElementById('searchInput').value.trim();
+    const difficulty = document.getElementById('difficultyFilter').value;
+    const time = document.getElementById('timeFilter').value;
+
+    try {
+        // Если есть активные фильтры, используем новый эндпоинт фильтрации
+        if (difficulty || time) {
+            const params = new URLSearchParams();
+            if (difficulty) params.append('difficulty', difficulty);
+            if (time) params.append('time', time);
+
+            const response = await fetch(`http://localhost:49896/api/topics/filter?${params.toString()}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const topics = await response.json();
+            
+            // Обновляем данные и отображаем темы
+            topicsData = topics;
+            document.getElementById('topicsList').innerHTML = '';
+            displayTopics(topics);
+        } else {
+            // Если нет фильтров, показываем все разделы
+            const response = await fetch('http://localhost:49896/api/topics/sections');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const sections = await response.json();
+            
+            // Обновляем данные и отображаем разделы
+            topicsData = sections;
+            document.getElementById('topicsList').innerHTML = '';
+            loadSections(0);
+        }
+    } catch (error) {
+        console.error('Ошибка при применении фильтров:', error);
+        document.getElementById('topicsList').innerHTML = '<p class="error">Ошибка при применении фильтров</p>';
+    }
+}
+
+// Обновляем функцию searchTopics для использования applyFilters
+function searchTopics() {
+    applyFilters();
+} 

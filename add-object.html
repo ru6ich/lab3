@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить тему</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        function validateField(field) {
+            const errorContainer = document.getElementById(`${field.id}-error`);
+            let errors = [];
+
+            switch (field.id) {
+                case 'topic-name':
+                    if (field.value.length < 3) {
+                        errors.push("Название темы должно содержать не менее 3 символов.");
+                    }
+                    break;
+                case 'section-name':
+                    if (field.value.length < 3) {
+                        errors.push("Название раздела должно содержать не менее 3 символов.");
+                    }
+                    break;
+                case 'description':
+                    if (field.value.length < 10) {
+                        errors.push("Описание должно содержать не менее 10 символов.");
+                    }
+                    break;
+                case 'author-name':
+                    const nameRegex = /^[A-Za-zА-Яа-яЁё\s-]+$/;
+                    if (!nameRegex.test(field.value)) {
+                        errors.push("Имя автора должно содержать только буквы и пробелы.");
+                    }
+                    break;
+                case 'email':
+                    const emailRegex = /^(?!.*\.\.)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+(?:\.[a-zA-Z]{2,})+$/;
+                    if (!emailRegex.test(field.value)) {
+                        errors.push("Введите корректный адрес электронной почты.");
+                    }
+                    break;
+                case 'date':
+                    if (!field.value) {
+                        errors.push("Введите дату создания темы.");
+                    }
+                    break;
+                case 'complexity':
+                    if (!field.value) {
+                        errors.push("Выберите сложность.");
+                    }
+                    break;
+                case 'reading-time':
+                    if (!field.value) {
+                        errors.push("Выберите время чтения.");
+                    }
+                    break;
+            }
+
+            updateErrorMessages(errors, errorContainer);
+        }
+
+        function updateErrorMessages(errors, errorContainer) {
+            errorContainer.innerHTML = '';
+
+            if (errors.length > 0) {
+                errors.forEach(error => {
+                    const li = document.createElement('li');
+                    li.textContent = error;
+                    errorContainer.appendChild(li);
+                });
+            }
+        }
+
+        function validateForm(event) {
+            event.preventDefault();
+
+            const fields = [
+                document.getElementById('topic-name'),
+                document.getElementById('section-name'),
+                document.getElementById('description'),
+                document.getElementById('author-name'),
+                document.getElementById('email'),
+                document.getElementById('date'),
+                document.getElementById('complexity'),
+                document.getElementById('reading-time')
+            ];
+
+            let hasErrors = false;
+            fields.forEach(field => {
+                validateField(field);
+                if (document.getElementById(`${field.id}-error`).children.length > 0) {
+                    hasErrors = true;
+                }
+            });
+
+            if (!hasErrors) {
+                submitFormData();
+            }
+        }
+
+        function submitFormData() {
+            const data = {
+                topicName: document.getElementById('topic-name').value,
+                sectionName: document.getElementById('section-name').value,
+                description: document.getElementById('description').value,
+                authorName: document.getElementById('author-name').value,
+                email: document.getElementById('email').value,
+                complexity: document.getElementById('complexity').value,
+                readingTime: parseInt(document.getElementById('reading-time').value),
+                creationDate: document.getElementById('date').value
+            };
+
+            console.log('Отправляемые данные:', data);
+
+            fetch('http://localhost:49896/api/topics/add-topic', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                console.log('Статус ответа:', response.status);
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return response.json().then(error => {
+                        throw new Error(error.message || 'Ошибка при добавлении темы');
+                    });
+                }
+            })
+            .then(result => {
+                console.log('Успешный ответ:', result);
+                alert('Тема успешно добавлена!');
+                document.getElementById('topic-form').reset();
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                alert('Ошибка при подключении к серверу: ' + error.message);
+            });
+        }
+
+        window.onload = function() {
+            const fields = document.querySelectorAll('#topic-form input, #topic-form textarea, #topic-form select');
+            fields.forEach(field => {
+                field.addEventListener('input', () => validateField(field));
+                field.addEventListener('change', () => validateField(field));
+            });
+        };
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Добавить тему</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Главная страница</a></li>
+                <li><a href="catalog.html">Темы изучения</a></li>
+                <li><a href="add-object.html" class="active">Добавить тему</a></li>
+                <li><a href="contacts.html">Контакты разработчика</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <p>Введите информацию для добавления новой темы</p>
+        <form id="topic-form" onsubmit="validateForm(event)">
+
+            <label for="topic-name">Название темы:</label>
+            <input type="text" id="topic-name" name="topic-name" required placeholder="Не менее 3 символов">
+            <ul id="topic-name-error" style="color: red;"></ul>
+
+            <label for="section-name">Название раздела:</label>
+            <input type="text" id="section-name" name="section-name" required placeholder="Не менее 3 символов">
+            <ul id="section-name-error" style="color: red;"></ul>
+
+            <label for="description">Описание:</label>
+            <textarea id="description" name="description" required placeholder="Не менее 10 символов"></textarea>
+            <ul id="description-error" style="color: red;"></ul>
+
+            <label for="author-name">Имя автора:</label>
+            <input type="text" id="author-name" name="author-name" required placeholder="Только буквы и пробелы">
+            <ul id="author-name-error" style="color: red;"></ul>
+
+            <label for="email">Email автора:</label>
+            <input type="email" id="email" name="email" required placeholder="example@mail.com">
+            <ul id="email-error" style="color: red;"></ul>
+
+            <label for="date">Дата создания темы:</label>
+            <input type="date" id="date" name="date" required>
+            <ul id="date-error" style="color: red;"></ul>
+
+            <label for="complexity">Сложность темы (звезды):</label>
+            <select id="complexity" name="complexity" required>
+                <option value="">Выберите сложность</option>
+                <option value="1">1 звезда</option>
+                <option value="2">2 звезды</option>
+                <option value="3">3 звезды</option>
+                <option value="4">4 звезды</option>
+                <option value="5">5 звезд</option>
+            </select>
+            <ul id="complexity-error" style="color: red;"></ul>
+
+            <label for="reading-time">Время чтения:</label>
+            <select id="reading-time" name="reading-time" required>
+                <option value="">Выберите время</option>
+                <option value="5">5 минут</option>
+                <option value="15">15 минут</option>
+                <option value="30">30 минут</option>
+                <option value="60">1 час</option>
+                <option value="120">2 часа</option>
+            </select>
+            <ul id="reading-time-error" style="color: red;"></ul>
+
+            <button type="submit">Добавить</button>
+        </form>
+    </main>
+    <footer>
+        <p>
+            <img src="kaspersky.jpg" alt="Логотип Kaspersky" class="footer-img">
+            Файлы защищены Kaspersky Internet Security
+        </p>
+    </footer>
+</body>
+</html>

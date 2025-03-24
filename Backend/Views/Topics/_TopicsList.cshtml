@@ -1,0 +1,25 @@
+@model IEnumerable<dynamic>
+
+@if (!Model.Any())
+{
+    <p>В этом разделе пока нет тем</p>
+}
+else
+{
+    <div class="cards-container">
+        @foreach (var topic in Model)
+        {
+            <div class="topic-card" data-topic-id="@topic.Id">
+                <h3>@topic.TopicName</h3>
+                <p>@topic.Description</p>
+                <div class="topic-meta">
+                    <span class="difficulty">Сложность: @topic.Difficulty звезд</span>
+                    <span class="time">Время: @topic.TimeLimit минут</span>
+                </div>
+                <div class="topic-actions">
+                    <button class="btn btn-sm btn-primary edit-topic" data-topic-id="@topic.Id">Редактировать</button>
+                </div>
+            </div>
+        }
+    </div>
+} 

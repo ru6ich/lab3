@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Детали темы</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1 id="topicTitle">Загрузка...</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Главная страница</a></li>
+                <li><a href="catalog.html">Темы изучения</a></li>
+                <li><a href="add-object.html">Добавить тему</a></li>
+                <li><a href="contacts.html">Контакты разработчика</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>Описание темы</h2>
+            <p id="topicDescription">Загрузка...</p>
+        </section>
+
+        <section>
+            <h2>Информация о теме</h2>
+            <div class="topic-info">
+                <p><strong>Сложность:</strong> <span id="topicDifficulty">Загрузка...</span></p>
+                <p><strong>Время на изучение:</strong> <span id="topicTimeLimit">Загрузка...</span> минут</p>
+                <p><strong>Раздел:</strong> <span id="topicSection">Загрузка...</span></p>
+                <p><strong>Автор:</strong> <span id="topicAuthor">Загрузка...</span></p>
+                <p><strong>Дата создания:</strong> <span id="topicCreatedAt">Загрузка...</span></p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Дополнительная информация</h2>
+            <div class="topic-description">
+                <p>Для получения дополнительной информации или задавания вопросов, пожалуйста, свяжитесь с автором по email: <span id="topicEmail">Загрузка...</span></p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const topicId = urlParams.get('id');
+
+            if (!topicId) {
+                document.body.innerHTML = '<h1>Ошибка</h1><p>ID темы не указан</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:49896/api/topics/${topicId}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const topic = await response.json();
+
+                // Заполняем данные на странице
+                document.title = topic.topicName;
+                document.getElementById('topicTitle').textContent = topic.topicName;
+                document.getElementById('topicDescription').textContent = topic.description;
+                document.getElementById('topicDifficulty').textContent = '★'.repeat(topic.difficulty);
+                document.getElementById('topicTimeLimit').textContent = topic.timeLimit;
+                document.getElementById('topicSection').textContent = topic.section.sectionName;
+                document.getElementById('topicAuthor').textContent = topic.authorName;
+                document.getElementById('topicEmail').textContent = topic.authorEmail;
+                document.getElementById('topicCreatedAt').textContent = new Date(topic.createdAt).toLocaleDateString('ru-RU');
+            } catch (error) {
+                document.body.innerHTML = `<h1>Ошибка</h1><p>Ошибка при загрузке информации о теме: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html> 

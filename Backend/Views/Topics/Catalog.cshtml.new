@@ -1,0 +1,53 @@
+@model IEnumerable<dynamic>
+
+@{
+    ViewData["Title"] = "Каталог тем";
+}
+
+<div class="container">
+    <h1>Каталог тем</h1>
+
+    <div class="filters">
+        <form method="get" action="@Url.Action("Catalog", "Topics")" class="filter-form">
+            <input type="text" name="query" class="form-control" placeholder="Поиск по темам..." value="@Context.Request.Query["query"]">
+            <select name="difficulty" class="form-control">
+                <option value="">Выберите сложность</option>
+                <option value="1" selected="@(Context.Request.Query["difficulty"] == "1")">1 звезда</option>
+                <option value="2" selected="@(Context.Request.Query["difficulty"] == "2")">2 звезды</option>
+                <option value="3" selected="@(Context.Request.Query["difficulty"] == "3")">3 звезды</option>
+                <option value="4" selected="@(Context.Request.Query["difficulty"] == "4")">4 звезды</option>
+                <option value="5" selected="@(Context.Request.Query["difficulty"] == "5")">5 звезд</option>
+            </select>
+            <select name="time" class="form-control">
+                <option value="">Выберите время</option>
+                <option value="5" selected="@(Context.Request.Query["time"] == "5")">5 минут</option>
+                <option value="15" selected="@(Context.Request.Query["time"] == "15")">15 минут</option>
+                <option value="30" selected="@(Context.Request.Query["time"] == "30")">30 минут</option>
+                <option value="60" selected="@(Context.Request.Query["time"] == "60")">1 час</option>
+                <option value="120" selected="@(Context.Request.Query["time"] == "120")">2 часа</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Применить фильтры</button>
+        </form>
+    </div>
+
+    <div class="sections-container">
+        @foreach (var section in Model)
+        {
+            <div class="section">
+                <h2>@section.SectionName (@section.TopicCount)</h2>
+                <div class="topics-container" id="topics-@section.Id">
+                    <div class="loading-indicator" style="display: none;">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Загрузка тем...
+                    </div>
+                    <div class="topics-content"></div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="~/js/catalog.js"></script>
+} 

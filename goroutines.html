@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Горутины в Go</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="enlargeImage.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Горутины в Go</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Главная страница</a></li>
+                <li><a href="catalog.html">Темы изучения</a></li>
+                <li><a href="add-object.html">Добавить тему</a></li>
+                <li><a href="contacts.html">Контакты разработчика</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>Что такое горутины?</h2>
+            <p>Горутины — это одна из самых мощных функций языка Go. Они позволяют выполнять задачи параллельно, используя ключевое слово <code>go</code>. В отличие от традиционных потоков, горутины являются лёгковесными и требуют меньше ресурсов, что делает их идеальными для высоконагруженных систем.</p>
+            <p>Параллельное выполнение задач помогает повысить производительность программ, особенно в многопроцессорных системах. Go предоставляет встроенные механизмы для синхронизации между горутинами, такие как каналы, которые позволяют безопасно обмениваться данными между ними.</p>
+            <h3>Преимущества использования горутин</h3>
+            <ul>
+                <li><strong>Лёгкость в использовании:</strong> Запуск горутины требует всего лишь добавления ключевого слова <code>go</code>.</li>
+                <li><strong>Меньше затрат ресурсов:</strong> Горутины используют значительно меньше памяти по сравнению с потоками.</li>
+                <li><strong>Удобная синхронизация:</strong> Использование каналов упрощает обмен данными между горутинами.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Пример использования горутин</h2>
+            <pre>
+                <code>
+                    package main
+
+                    import (
+                        "fmt"
+                        "time"
+                    )
+
+                    func printMessage(msg string) {
+                        for i := 0; i < 5; i++ {
+                            fmt.Println(msg)
+                            time.Sleep(500 * time.Millisecond)
+                        }
+                    }
+
+                    func main() {
+                        go printMessage("Привет из горутины!")
+                        printMessage("Привет из main!")
+                    }
+                </code>
+            </pre>
+            <p>В этом примере мы создаем функцию <code>printMessage</code>, которая выводит сообщение несколько раз с задержкой. Мы запускаем эту функцию как горутину, чтобы она выполнялась параллельно с основной функцией <code>main</code>.</p>
+
+            <h3>Объяснение кода</h3>
+            <table border=1>
+                <thead>
+                    <tr>
+                        <th>Строка кода</th>
+                        <th>Описание</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>go printMessage("Привет из горутины!")</code></td>
+                        <td>Запускает функцию как горутину.</td>
+                    </tr>
+                    <tr>
+                        <td><code>printMessage("Привет из main!")</code></td>
+                        <td>Запускает функцию в основном потоке.</td>
+                    </tr>
+                    <tr>
+                        <td><code>time.Sleep(500 * time.Millisecond)</code></td>
+                        <td>Создает задержку в 500 миллисекунд между выводами сообщения.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Выводы</h3>
+            <p>Данный пример демонстрирует, как легко можно запустить горутину и выполнять задачи параллельно. Использование горутин значительно упрощает разработку многопоточных приложений и позволяет эффективно использовать ресурсы системы.</p>
+
+            <img src="goroutine.png" style="max-width:50%;height:auto;cursor:pointer;" onclick="enlargeImage(this)">
+        </section>
+
+        <section>
+            <h2>Заключение</h2>
+            <p>Горутины являются одним из ключевых элементов языка Go, которые делают его уникальным и мощным инструментом для разработчиков. Их простота и эффективность позволяют создавать высокопроизводительные приложения с минимальными затратами на ресурсы. Понимание и умелое использование горутин открывает новые горизонты в разработке программного обеспечения.</p>
+        </section>
+        <div id="enlargedImage" class="enlarged" style="display:none;" onclick="this.style.display='none'">
+            <img id="largeImg" src="" alt="">
+        </div>
+
+    </main>
+    <footer>
+        <p><img src="kaspersky.jpg" alt="Логотип Kaspersky" style="max-width:5%;height:auto;">
+        Файлы защищены Kaspersky Internet Security</p>
+    </footer>
+</body>
+</html>
