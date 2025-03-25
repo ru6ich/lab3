@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "CxLAWRJC21Q=",
+  "dgSpecHash": "TpqTN4oR8l4=",
   "success": true,
-  "projectFilePath": "D:\\TSI\\lab3\\Backend\\Backend.csproj",
+  "projectFilePath": "D:\\PSP\\lab3\\Backend\\Backend.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\rahma\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\rahma\\.nuget\\packages\\microsoft.aspnetcore.openapi\\8.0.0\\microsoft.aspnetcore.openapi.8.0.0.nupkg.sha512",

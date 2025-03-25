@@ -20,14 +20,6 @@ $(document).ready(function() {
         loadTopics(sectionId, container, topicsContent);
     });
 
-    // Обработчик клика по кнопке редактирования (делегированный)
-    $(document).on('click', '.edit-topic', function(e) {
-        e.stopPropagation(); // Предотвращаем всплытие события
-        console.log('Клик по кнопке редактирования');
-        const topicId = $(this).data('topic-id');
-        console.log('ID темы:', topicId);
-        editTopic(topicId);
-    });
 });
 
 // Функция для загрузки тем раздела
@@ -81,76 +73,3 @@ function loadTopics(sectionId, container, topicsContent) {
             topicsContent.html('<div class="error-message">Ошибка при загрузке тем</div>');
         });
 }
-
-// Функция для редактирования темы
-function editTopic(topicId) {
-    // Получаем данные темы
-    $.get('/api/topics/' + topicId)
-        .done(function(topic) {
-            // Создаем форму редактирования
-            const formHtml = `
-                <div class="edit-form">
-                    <h3>Редактирование темы</h3>
-                    <form id="editTopicForm">
-                        <input type="hidden" name="id" value="${topic.id}">
-                        <div class="form-group">
-                            <label for="topicName">Название темы</label>
-                            <input type="text" class="form-control" id="topicName" name="topicName" value="${topic.topicName}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="description">Описание</label>
-                            <textarea class="form-control" id="description" name="description" rows="3">${topic.description || ''}</textarea>
-                        </div>
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">Сохранить</button>
-                            <button type="button" class="btn btn-secondary" onclick="closeEditForm()">Отмена</button>
-                        </div>
-                    </form>
-                </div>
-            `;
-
-            // Добавляем форму на страницу
-            $('body').append(formHtml);
-
-            // Обработчик отправки формы
-            $('#editTopicForm').submit(function(e) {
-                e.preventDefault();
-                const formData = {
-                    id: topic.id,
-                    topicName: $('#topicName').val(),
-                    description: $('#description').val(),
-                    difficulty: topic.difficulty,
-                    timeLimit: topic.timeLimit,
-                    sectionId: topic.sectionId
-                };
-
-                // Отправляем данные на сервер
-                $.ajax({
-                    url: '/api/topics/' + topicId,
-                    method: 'PUT',
-                    contentType: 'application/json',
-                    data: JSON.stringify(formData)
-                })
-                .done(function(response) {
-                    // Обновляем отображение темы на странице
-                    const topicCard = $(`.topic-card[data-topic-id="${topicId}"]`);
-                    topicCard.find('h3').text(formData.topicName);
-                    topicCard.find('p').text(formData.description);
-                    
-                    // Закрываем форму
-                    closeEditForm();
-                })
-                .fail(function(error) {
-                    alert('Ошибка при сохранении темы');
-                });
-            });
-        })
-        .fail(function(error) {
-            alert('Ошибка при загрузке данных темы');
-        });
-}
-
-// Функция для закрытия формы редактирования
-function closeEditForm() {
-    $('.edit-form').remove();
-} 

@@ -6,41 +6,45 @@
     <title>Темы по Go</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        .edit-button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .edit-button:hover {
-            background-color: #45a049;
-        }
-
-        .edit-form {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            z-index: 1000;
-        }
-
-        .edit-form input, .edit-form textarea {
-            width: 100%;
-            margin-bottom: 10px;
-            padding: 8px;
-        }
-
-        .edit-form button {
+        /* Стили для выпадающего списка поиска */
+        .search-container {
+            position: relative;
+            display: inline-block;
             margin-right: 10px;
+        }
+        
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            display: none;
+        }
+        
+        .search-results .search-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .search-results .search-item:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .search-results .search-item .topic-title {
+            font-weight: bold;
+        }
+        
+        .search-results .search-item .topic-section {
+            color: #666;
+            font-size: 0.85em;
         }
     </style>
 </head>
@@ -60,8 +64,11 @@
         <section>
             <h2 class="visually-hidden">Темы для изучения</h2>
 
-            <!-- Фильтры -->
-            <input type="text" id="search" placeholder="Поиск по разделам..." oninput="searchTopics(this.value)">
+             <!-- Фильтры -->
+             <div class="search-container">
+                <input type="text" id="search" placeholder="Поиск по разделам..." oninput="searchTopics(this.value)">
+                <div id="search-results" class="search-results"></div>
+            </div>
             <select id="difficulty-filter" onchange="applyFilters()">
                 <option value="">Выберите сложность</option>
                 <option value="1">1 звезда</option>
@@ -88,61 +95,6 @@
             Файлы защищены Kaspersky Internet Security
         </p>
     </footer>
-
-    <div id="editForm" class="edit-form">
-        <h3>Редактировать тему</h3>
-        <input type="hidden" id="editTopicId">
-        
-        <label for="editTopicName">Название темы:</label>
-        <input type="text" id="editTopicName" required placeholder="Не менее 3 символов">
-        <ul id="editTopicName-error" style="color: red;"></ul>
-
-        <label for="editSectionName">Название раздела:</label>
-        <input type="text" id="editSectionName" required placeholder="Не менее 3 символов">
-        <ul id="editSectionName-error" style="color: red;"></ul>
-
-        <label for="editDescription">Описание:</label>
-        <textarea id="editDescription" required placeholder="Не менее 10 символов"></textarea>
-        <ul id="editDescription-error" style="color: red;"></ul>
-
-        <label for="editAuthorName">Имя автора:</label>
-        <input type="text" id="editAuthorName" required placeholder="Только буквы и пробелы">
-        <ul id="editAuthorName-error" style="color: red;"></ul>
-
-        <label for="editEmail">Email автора:</label>
-        <input type="email" id="editEmail" required placeholder="example@mail.com">
-        <ul id="editEmail-error" style="color: red;"></ul>
-
-        <label for="editDate">Дата создания темы:</label>
-        <input type="date" id="editDate" required>
-        <ul id="editDate-error" style="color: red;"></ul>
-
-        <label for="editDifficulty">Сложность темы (звезды):</label>
-        <select id="editDifficulty" required>
-            <option value="">Выберите сложность</option>
-            <option value="1">1 звезда</option>
-            <option value="2">2 звезды</option>
-            <option value="3">3 звезды</option>
-            <option value="4">4 звезды</option>
-            <option value="5">5 звезд</option>
-        </select>
-        <ul id="editDifficulty-error" style="color: red;"></ul>
-
-        <label for="editTimeLimit">Время чтения:</label>
-        <select id="editTimeLimit" required>
-            <option value="">Выберите время</option>
-            <option value="5">5 минут</option>
-            <option value="15">15 минут</option>
-            <option value="30">30 минут</option>
-            <option value="60">1 час</option>
-            <option value="120">2 часа</option>
-        </select>
-        <ul id="editTimeLimit-error" style="color: red;"></ul>
-
-        <button onclick="validateAndSaveEdit()">Сохранить</button>
-        <button onclick="cancelEdit()">Отмена</button>
-    </div>
-
     <script>
         let topicsData = [];
         let loadedSections = 0;
@@ -176,7 +128,6 @@
                     <div class="time">Время на изучение: ${topic.timeLimit} мин</div>
                     <div class="author">Автор: ${topic.authorName}</div>
                     <div class="date">Дата создания: ${new Date(topic.createdAt).toLocaleDateString()}</div>
-                    <button class="edit-button" onclick="editTopic(${topic.id})">Редактировать</button>
                 `;
                 
                 topicList.appendChild(card);
@@ -263,73 +214,116 @@
 
         // Добавляем новые функции для работы с API
         function searchTopics(query) {
-            applyFilters();
+            const searchResults = document.getElementById('search-results');
+            
+            // Скрываем выпадающий список, если запрос пустой
+            if (!query.trim()) {
+                searchResults.style.display = 'none';
+                return;
+            }
+            
+            // Выполняем запрос к API для поиска тем
+            fetch(`http://localhost:49896/api/topics/search?query=${encodeURIComponent(query.trim())}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(topics => {
+                    console.log('Результаты поиска:', topics);
+                    
+                    searchResults.innerHTML = '';
+                    
+                    if (topics.length === 0) {
+                        searchResults.innerHTML = '<div class="search-item">Ничего не найдено</div>';
+                    } else {
+                        topics.forEach(topic => {
+                            const item = document.createElement('div');
+                            item.className = 'search-item';
+                            item.innerHTML = `
+                                <div class="topic-title">${topic.topicName}</div>
+                                <div class="topic-section">Раздел: ${topic.sectionName}</div>
+                            `;
+                            
+                            // Обработчик клика для перехода на страницу темы
+                            item.addEventListener('click', () => {
+                                window.location.href = `topic-details.html?id=${topic.id}`;
+                            });
+                            
+                            searchResults.appendChild(item);
+                        });
+                    }
+                    
+                    // Показываем выпадающий список
+                    searchResults.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Ошибка при поиске тем:', error);
+                    searchResults.innerHTML = '<div class="search-item">Ошибка при поиске</div>';
+                    searchResults.style.display = 'block';
+                });
         }
 
         function applyFilters() {
-            const query = document.getElementById('search').value;
             const difficulty = document.getElementById('difficulty-filter').value;
             const time = document.getElementById('time-filter').value;
 
-            // Если есть хотя бы один активный фильтр, показываем темы напрямую
-            if (query.trim() || difficulty || time) {
-                let url = 'http://localhost:49896/api/topics/search?';
-                const params = new URLSearchParams();
-
-                if (query.trim()) {
-                    params.append('query', query.trim());
-                }
-                if (difficulty) {
-                    params.append('difficulty', difficulty);
-                }
-                if (time) {
-                    params.append('time', time);
-                }
-
-                url += params.toString();
-
-                console.log('Отправка запроса:', url);
-
-                fetch(url)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(topics => {
-                        console.log('Получены темы:', topics);
-                        renderTopics(topics);
-                    })
-                    .catch(error => {
-                        console.error('Ошибка при поиске тем:', error);
-                        document.querySelector('.topic-list').innerHTML = '<p class="error">Ошибка при поиске тем</p>';
-                    });
-            } else {
-                // Если фильтров нет, показываем разделы
+            // Если фильтры очищены, загружаем все разделы
+            if (!difficulty && !time) {
+                document.querySelector('.topic-list').innerHTML = '';
                 fetch('http://localhost:49896/api/topics/sections')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Ошибка при загрузке разделов');
-                        }
-                        return response.json();
-                    })
+                    .then(response => response.json())
                     .then(sections => {
                         topicsData = sections.map(section => ({
                             name: section.sectionName,
                             topicCount: section.topicCount,
                             topics: []
                         }));
-                        const topicList = document.querySelector('.topic-list');
-                        topicList.innerHTML = '';
                         loadSections(0);
                     })
                     .catch(error => {
                         console.error('Ошибка при загрузке разделов:', error);
                         document.querySelector('.topic-list').innerHTML = '<p class="error">Ошибка при загрузке разделов</p>';
                     });
+                return;
             }
+
+            let url = 'http://localhost:49896/api/topics/filter?';
+            const params = new URLSearchParams();
+
+            if (difficulty) {
+                params.append('difficulty', difficulty);
+            }
+            if (time) {
+                params.append('time', time);
+            }
+
+            url += params.toString();
+
+            fetch(url)
+                .then(response => response.json())
+                .then(topics => {
+                    renderTopics(topics);
+                })
+                .catch(error => {
+                    console.error('Ошибка при фильтрации тем:', error);
+                    document.querySelector('.topic-list').innerHTML = '<p class="error">Ошибка при фильтрации тем</p>';
+                });
         }
+
+
+
+        
+        // Добавляем обработчик для скрытия выпадающего списка при клике вне него
+        document.addEventListener('click', function(event) {
+            const searchResults = document.getElementById('search-results');
+            const searchInput = document.getElementById('search');
+            
+            if (event.target !== searchResults && event.target !== searchInput && !searchResults.contains(event.target)) {
+                searchResults.style.display = 'none';
+            }
+        });
 
         // Функция для загрузки тем выбранного раздела
         function loadTopics(sectionName, container) {
@@ -369,7 +363,6 @@
                             <div class="time">Время на изучение: ${topic.timeLimit} мин</div>
                             <div class="author">Автор: ${topic.authorName}</div>
                             <div class="date">Дата создания: ${new Date(topic.createdAt).toLocaleDateString()}</div>
-                            <button class="edit-button" onclick="editTopic(${topic.id})">Редактировать</button>
                         `;
                         
                         cardsContainer.appendChild(card);
@@ -384,32 +377,6 @@
                     console.error('Ошибка при загрузке тем:', error);
                     container.innerHTML = `<p class="error">Ошибка при загрузке тем: ${error.message}</p>`;
                     container.dataset.loaded = 'true';
-                });
-        }
-
-        // Функции для редактирования темы
-        function editTopic(topicId) {
-            const editForm = document.getElementById('editForm');
-            
-            // Получаем данные темы
-            fetch(`http://localhost:49896/api/topics/${topicId}`)
-                .then(response => response.json())
-                .then(topic => {
-                    document.getElementById('editTopicId').value = topic.id;
-                    document.getElementById('editTopicName').value = topic.topicName;
-                    document.getElementById('editSectionName').value = topic.sectionName;
-                    document.getElementById('editDescription').value = topic.description;
-                    document.getElementById('editAuthorName').value = topic.authorName;
-                    document.getElementById('editEmail').value = topic.authorEmail;
-                    document.getElementById('editDate').value = topic.createdAt.split('T')[0];
-                    document.getElementById('editDifficulty').value = topic.difficulty;
-                    document.getElementById('editTimeLimit').value = topic.timeLimit;
-                    
-                    editForm.style.display = 'block';
-                })
-                .catch(error => {
-                    console.error('Ошибка при загрузке темы:', error);
-                    alert('Ошибка при загрузке темы');
                 });
         }
 
@@ -474,91 +441,6 @@
                     errorContainer.appendChild(li);
                 });
             }
-        }
-
-        function validateAndSaveEdit() {
-            const fields = [
-                document.getElementById('editTopicName'),
-                document.getElementById('editSectionName'),
-                document.getElementById('editDescription'),
-                document.getElementById('editAuthorName'),
-                document.getElementById('editEmail'),
-                document.getElementById('editDate'),
-                document.getElementById('editDifficulty'),
-                document.getElementById('editTimeLimit')
-            ];
-
-            let hasErrors = false;
-            fields.forEach(field => {
-                validateField(field);
-                if (document.getElementById(`${field.id}-error`).children.length > 0) {
-                    hasErrors = true;
-                }
-            });
-
-            if (!hasErrors) {
-                saveEdit();
-            }
-        }
-
-        function saveEdit() {
-            const topicId = document.getElementById('editTopicId').value;
-            
-            // Создаем объект с данными темы
-            const params = new URLSearchParams({
-                id: topicId,
-                topicName: document.getElementById('editTopicName').value,
-                sectionName: document.getElementById('editSectionName').value,
-                description: document.getElementById('editDescription').value,
-                authorName: document.getElementById('editAuthorName').value,
-                email: document.getElementById('editEmail').value,
-                creationDate: document.getElementById('editDate').value,
-                complexity: document.getElementById('editDifficulty').value.toString(),
-                readingTime: document.getElementById('editTimeLimit').value.toString()
-            });
-
-            // Используем URL для редактирования темы с параметрами в URL
-            const url = `http://localhost:49896/api/topics/edit?${params.toString()}`;
-            
-            console.log('URL запроса:', url);
-
-            fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json'
-                },
-                credentials: 'include'
-            })
-            .then(response => {
-                console.log('Статус ответа:', response.status);
-                if (!response.ok) {
-                    return response.text().then(text => {
-                        console.error('Текст ошибки:', text);
-                        throw new Error(`Ошибка при обновлении темы: ${response.status} ${text}`);
-                    });
-                }
-                return response.json();
-            })
-            .then(result => {
-                console.log('Успешный ответ:', result);
-                // Удаляем старую запись из списка тем
-                const oldCard = document.querySelector(`[data-topic-id="${topicId}"]`);
-                if (oldCard) {
-                    oldCard.remove();
-                }
-                alert('Тема успешно обновлена!');
-                cancelEdit();
-                // Перезагружаем список тем
-                applyFilters();
-            })
-            .catch(error => {
-                console.error('Ошибка при обновлении темы:', error);
-                alert('Ошибка при обновлении темы: ' + error.message);
-            });
-        }
-
-        function cancelEdit() {
-            document.getElementById('editForm').style.display = 'none';
         }
 
         // Закрытие формы при клике вне её

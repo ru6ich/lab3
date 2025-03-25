@@ -349,69 +349,53 @@ namespace Backend.Controllers
         }
 
         [HttpGet("filter")]
-        public async Task<ActionResult<IEnumerable<Topic>>> FilterTopics(
-            [FromQuery] string? difficulty = null,
-            [FromQuery] string? time = null)
+public async Task<ActionResult<IEnumerable<Topic>>> FilterTopics(
+    [FromQuery] string? difficulty = null,
+    [FromQuery] string? time = null)
+{
+    try
+    {
+        _logger.LogInformation("Фильтрация тем: Difficulty={Difficulty}, Time={Time}", difficulty, time);
+
+        var query = _context.Topics.Include(t => t.Section).AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(difficulty) && int.TryParse(difficulty, out int difficultyValue))
         {
-            try
-            {
-                _logger.LogInformation("Получен запрос на фильтрацию тем. Параметры: Difficulty={Difficulty}, Time={Time}", 
-                    difficulty, time);
-
-                // Начинаем с базового запроса
-                var searchQuery = _context.Topics
-                    .Include(t => t.Section)
-                    .AsQueryable();
-
-                // Применяем фильтр по сложности, если указан
-                if (!string.IsNullOrWhiteSpace(difficulty) && int.TryParse(difficulty, out int diffValue))
-                {
-                    searchQuery = searchQuery.Where(t => t.Difficulty == diffValue);
-                }
-
-                // Применяем фильтр по времени, если указан
-                if (!string.IsNullOrWhiteSpace(time) && int.TryParse(time, out int timeValue))
-                {
-                    searchQuery = searchQuery.Where(t => t.TimeLimit <= timeValue);
-                }
-
-                // Получаем результаты
-                var topics = await searchQuery
-                    .Select(t => new
-                    {
-                        t.Id,
-                        t.TopicName,
-                        t.Description,
-                        t.Difficulty,
-                        t.TimeLimit,
-                        t.AuthorName,
-                        t.AuthorEmail,
-                        t.CreatedAt,
-                        t.SectionId,
-                        Section = t.Section != null ? new { t.Section.SectionName } : null
-                    })
-                    .ToListAsync();
-
-                _logger.LogInformation("Найдено тем: {Count}", topics.Count);
-
-                // Логируем результаты поиска
-                foreach (var topic in topics)
-                {
-                    _logger.LogInformation("Найдена тема: {TopicName}, Раздел: {SectionName}, Сложность: {Difficulty}, Время: {TimeLimit}",
-                        topic.TopicName,
-                        topic.Section?.SectionName ?? "Нет раздела",
-                        topic.Difficulty,
-                        topic.TimeLimit);
-                }
-
-                return Ok(topics);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Ошибка при фильтрации тем");
-                return StatusCode(500, new { message = "Ошибка при фильтрации тем", error = ex.Message });
-            }
+            query = query.Where(t => t.Difficulty == difficultyValue);
         }
+
+        if (!string.IsNullOrWhiteSpace(time) && int.TryParse(time, out int timeValue))
+        {
+            query = query.Where(t => t.TimeLimit == timeValue); // Строгое соответствие
+        }
+
+        var topics = await query
+            .Select(t => new
+            {
+                t.Id,
+                t.TopicName,
+                t.Description,
+                t.Difficulty,
+                t.TimeLimit,
+                t.AuthorName,
+                t.AuthorEmail,
+                t.CreatedAt,
+                t.SectionId,
+                Section = t.Section != null ? new { t.Section.SectionName } : null
+            })
+            .ToListAsync();
+
+        _logger.LogInformation("Найдено {Count} тем после фильтрации", topics.Count);
+        return Ok(topics);
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Ошибка при фильтрации тем");
+        return StatusCode(500, new { message = "Ошибка при фильтрации тем", error = ex.Message });
+    }
+}
+
+
 
         [HttpGet("section/{id}/topics")]
         public async Task<IActionResult> GetSectionTopics(int id)

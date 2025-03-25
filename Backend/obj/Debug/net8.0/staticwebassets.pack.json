@@ -1,15 +1,15 @@
 {
   "Files": [
     {
-      "Id": "D:\\TSI\\lab3\\Backend\\wwwroot\\css\\site.css",
+      "Id": "D:\\PSP\\lab3\\Backend\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },
     {
-      "Id": "D:\\TSI\\lab3\\Backend\\wwwroot\\js\\catalog.js",
+      "Id": "D:\\PSP\\lab3\\Backend\\wwwroot\\js\\catalog.js",
       "PackagePath": "staticwebassets\\js\\catalog.js"
     },
     {
-      "Id": "D:\\TSI\\lab3\\Backend\\wwwroot\\js\\site.js",
+      "Id": "D:\\PSP\\lab3\\Backend\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },
     {

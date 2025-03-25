@@ -2726,11 +2726,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\TSI\\lab3\\Backend\\Backend.csproj",
+      "projectUniqueName": "D:\\PSP\\lab3\\Backend\\Backend.csproj",
       "projectName": "Backend",
-      "projectPath": "D:\\TSI\\lab3\\Backend\\Backend.csproj",
+      "projectPath": "D:\\PSP\\lab3\\Backend\\Backend.csproj",
       "packagesPath": "C:\\Users\\rahma\\.nuget\\packages\\",
-      "outputPath": "D:\\TSI\\lab3\\Backend\\obj\\",
+      "outputPath": "D:\\PSP\\lab3\\Backend\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
