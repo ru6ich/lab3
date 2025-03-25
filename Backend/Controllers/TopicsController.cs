@@ -4,6 +4,7 @@ using Backend.Data;
 using Backend.Models;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
 
 namespace Backend.Controllers
 {
@@ -27,13 +28,18 @@ namespace Backend.Controllers
             {
                 _logger.LogInformation("Получен запрос на добавление темы: {@TopicDto}", topicDto);
 
+                // Проверяем корректность данных
                 if (!ModelState.IsValid)
                 {
-                    _logger.LogWarning("Некорректные данные темы: {@Errors}", ModelState.Values.SelectMany(v => v.Errors));
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                                .Select(e => e.ErrorMessage)
+                                                .ToList();
+
+                    _logger.LogWarning("Ошибки валидации: {Errors}", string.Join("; ", errors));
+                    return BadRequest(new { message = "Ошибка валидации", errors });
                 }
 
-                // Поиск или создание раздела
+                // Проверка существования раздела
                 var section = await _context.Sections
                     .FirstOrDefaultAsync(s => s.SectionName == topicDto.SectionName);
 
@@ -45,11 +51,18 @@ namespace Backend.Controllers
                     await _context.SaveChangesAsync();
                 }
 
-                // Преобразуем сложность из строки в число
+                // Преобразование сложности в число
                 if (!int.TryParse(topicDto.Complexity, out int difficulty))
                 {
                     _logger.LogWarning("Некорректное значение сложности: {Complexity}", topicDto.Complexity);
-                    return BadRequest("Некорректное значение сложности");
+                    return BadRequest(new { message = "Некорректное значение сложности" });
+                }
+
+                // Преобразование даты
+                if (!DateTime.TryParse(topicDto.CreationDate, out DateTime creationDate))
+                {
+                    _logger.LogWarning("Некорректный формат даты: {CreationDate}", topicDto.CreationDate);
+                    return BadRequest(new { message = "Некорректный формат даты" });
                 }
 
                 var topic = new Topic
@@ -60,7 +73,7 @@ namespace Backend.Controllers
                     TimeLimit = topicDto.ReadingTime,
                     AuthorName = topicDto.AuthorName,
                     AuthorEmail = topicDto.Email,
-                    CreatedAt = DateTime.Parse(topicDto.CreationDate),
+                    CreatedAt = creationDate,
                     SectionId = section.Id
                 };
 
@@ -77,6 +90,7 @@ namespace Backend.Controllers
                 return StatusCode(500, new { message = "Ошибка при добавлении темы", error = ex.Message });
             }
         }
+
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Topic>>> GetTopics()
@@ -508,15 +522,41 @@ public async Task<ActionResult<IEnumerable<Topic>>> FilterTopics(
         }
     }
 
-    public class TopicDto
-    {
-        public required string TopicName { get; set; }
-        public required string SectionName { get; set; }
-        public required string Description { get; set; }
-        public required string AuthorName { get; set; }
-        public required string Email { get; set; }
-        public required string Complexity { get; set; }
-        public required int ReadingTime { get; set; }
-        public required string CreationDate { get; set; }
-    }
+    
+
+public class TopicDto
+{
+    [Required(ErrorMessage = "Название темы обязательно.")]
+    [MinLength(3, ErrorMessage = "Название темы должно содержать не менее 3 символов.")]
+    public required string TopicName { get; set; }
+
+    [Required(ErrorMessage = "Название раздела обязательно.")]
+    [MinLength(3, ErrorMessage = "Название раздела должно содержать не менее 3 символов.")]
+    public required string SectionName { get; set; }
+
+    [Required(ErrorMessage = "Описание обязательно.")]
+    [MinLength(10, ErrorMessage = "Описание должно содержать не менее 10 символов.")]
+    public required string Description { get; set; }
+
+    [Required(ErrorMessage = "Имя автора обязательно.")]
+    [RegularExpression(@"^[A-Za-zА-Яа-яЁё\s-]+$", ErrorMessage = "Имя автора должно содержать только буквы и пробелы.")]
+    public required string AuthorName { get; set; }
+
+    [Required(ErrorMessage = "Email обязателен.")]
+    [EmailAddress(ErrorMessage = "Введите корректный адрес электронной почты.")]
+    public required string Email { get; set; }
+
+    [Required(ErrorMessage = "Сложность обязательна.")]
+    [RegularExpression(@"^[1-5]$", ErrorMessage = "Сложность должна быть числом от 1 до 5.")]
+    public required string Complexity { get; set; }
+
+    [Required(ErrorMessage = "Время на изучение обязательно.")]
+    [Range(1, int.MaxValue, ErrorMessage = "Время на изучение должно быть положительным числом.")]
+    public int ReadingTime { get; set; }
+
+    [Required(ErrorMessage = "Дата создания обязательна.")]
+    [DataType(DataType.Date, ErrorMessage = "Введите корректную дату.")]
+    public required string CreationDate { get; set; }
+}
+
 } 

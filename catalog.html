@@ -65,26 +65,29 @@
             <h2 class="visually-hidden">Темы для изучения</h2>
 
              <!-- Фильтры -->
-             <div class="search-container">
-                <input type="text" id="search" placeholder="Поиск по разделам..." oninput="searchTopics(this.value)">
-                <div id="search-results" class="search-results"></div>
+             <div class="filter-container">
+                <div class="search-container">
+                    <input type="text" id="search" placeholder="Поиск по разделам..." oninput="searchTopics(this.value)">
+                    <div id="search-results" class="search-results"></div>
+                </div>
+                <select id="difficulty-filter" onchange="applyFilters()">
+                    <option value="">Выберите сложность</option>
+                    <option value="1">1 звезда</option>
+                    <option value="2">2 звезды</option>
+                    <option value="3">3 звезды</option>
+                    <option value="4">4 звезды</option>
+                    <option value="5">5 звезд</option>
+                </select>
+                
+                <select id="time-filter" onchange="applyFilters()">
+                    <option value="">Выберите время</option>
+                    <option value="5">5 минут</option>
+                    <option value="15">15 минут</option>
+                    <option value="30">30 минут</option>
+                    <option value="60">1 час</option>
+                    <option value="120">2 часа</option>
+                </select>
             </div>
-            <select id="difficulty-filter" onchange="applyFilters()">
-                <option value="">Выберите сложность</option>
-                <option value="1">1 звезда</option>
-                <option value="2">2 звезды</option>
-                <option value="3">3 звезды</option>
-                <option value="4">4 звезды</option>
-                <option value="5">5 звезд</option>
-            </select>
-            <select id="time-filter" onchange="applyFilters()">
-                <option value="">Выберите время</option>
-                <option value="5">5 минут</option>
-                <option value="15">15 минут</option>
-                <option value="30">30 минут</option>
-                <option value="60">1 час</option>
-                <option value="120">2 часа</option>
-            </select>
 
             <ul class="topic-list"></ul>
         </section>
