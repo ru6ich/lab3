@@ -38,6 +38,16 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+//new code
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+app.Urls.Add($"http://*:{port}");
+
+app.UseRouting();
+app.UseAuthorization();
+
+app.MapControllers();
+app.MapGet("/", () => "API работает!");
+//new code
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
