@@ -79,5 +79,7 @@ var logger = app.Services.GetRequiredService<ILogger<Program>>();
 logger.LogInformation("Starting application...");
 logger.LogInformation($"Database connection string: {connectionString}");
 
+Console.WriteLine($"Application is listening on port: {port}");
+
 // Запускаем приложение
 app.Run();
