@@ -47,7 +47,10 @@ app.UseRouting();
 app.UseAuthorization();
 
 // Добавляем обработку маршрутов контроллеров
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    _ = endpoints.MapControllers();  // Это важно
+});
 
 // Проверочный маршрут, чтобы убедиться, что сервер запустился
 app.MapGet("/", () => "API работает!");
