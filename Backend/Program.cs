@@ -1,12 +1,9 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Backend.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Добавляем контроллеры
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -16,7 +13,7 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
-// Добавляем контекст базы данных
+// Настройка базы данных
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -24,45 +21,48 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.LogTo(Console.WriteLine, LogLevel.Information);
 });
 
-// Добавляем CORS сервис
+// Разрешаем все источники для CORS (чтобы работал фронт)
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigins",
-        builder =>
+    options.AddPolicy("AllowAll",
+        policy =>
         {
-            builder.WithOrigins("http://127.0.0.1:5500", "http://localhost:5500")
-                   .AllowAnyMethod()
-                   .AllowAnyHeader()
-                   .AllowCredentials();
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
         });
 });
 
 var app = builder.Build();
-//new code
+
+// Настройка порта для Railway
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 app.Urls.Add($"http://*:{port}");
 
+// Включаем CORS (ДО UseRouting())
+app.UseCors("AllowAll");
+
+// Включаем маршрутизацию
 app.UseRouting();
 app.UseAuthorization();
 
-app.MapControllers();
-app.MapGet("/", () => "API работает!");
-//new code
+// Добавляем обработку маршрутов контроллеров
+app.UseEndpoints(endpoints =>
+{
+    _ = endpoints.MapControllers();
+});
 
-// Configure the HTTP request pipeline.
+// Проверочный маршрут, чтобы убедиться, что сервер запустился
+app.MapGet("/", () => "API работает!");
+
+// Swagger включаем только в режиме разработки
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// Важно: CORS должен быть до UseHttpsRedirection
-app.UseCors("AllowSpecificOrigins");
-
-// Отключаем HTTPS редирект
-// app.UseHttpsRedirection();
-
-// Добавляем логирование запросов
+// Логируем запросы
 app.Use(async (context, next) =>
 {
     var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
@@ -74,12 +74,10 @@ app.Use(async (context, next) =>
     logger.LogInformation($"Response: {context.Response.StatusCode}");
 });
 
-app.UseAuthorization();
-app.MapControllers();
-
-// Добавляем логирование при запуске
+// Логируем запуск приложения
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 logger.LogInformation("Starting application...");
 logger.LogInformation($"Database connection string: {connectionString}");
 
-app.Run(); 
+// Запускаем приложение
+app.Run();
